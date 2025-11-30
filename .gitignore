@@ -1,0 +1,27 @@
+# Build directories
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+*.userprefs
+*.ncb
+*.vcxproj.user
+*.dbmdl
+*.opendb
+
+# Visual Studio / Rider / VS Code
+.vs/
+*.vs/
+*.vscode/
+
+# MacOS
+.DS_Store
+
+# Rider
+.idea/
+
+# NuGet packages
+*.nupkg
+packages/
