@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="TiltControl.MainPage">
 
-    <Grid RowDefinitions="0.1*, 0.8*">
+    <Grid RowDefinitions="0.1*, 0.8*, 0.1*">
         <Grid Grid.Row="0" RowDefinitions="*,*" ColumnDefinitions="*,*,*,*" Padding="10">
             
             <Label Grid.Row="0" Grid.Column="0" Text="X-sensor:" FontSize="Small" FontAttributes="Bold"/>
@@ -29,6 +29,14 @@
                AbsoluteLayout.LayoutFlags="PositionProportional" />
 
         </AbsoluteLayout>
+        <HorizontalStackLayout Grid.Row="2">
+            
+            <Button x:Name="ToggleButton" Clicked="ToggleButton_Clicked" Text="Toggle Sensor" />
+            <Button x:Name="SlowButton" Clicked="ToggleButton_Clicked" Text="&lt;" FontAttributes="Bold" CornerRadius="999"/>
+            <Label x:Name="SpeedLabel" Text="x1.0" HorizontalOptions="Center" VerticalOptions="Center"/>
+            <Button x:Name="FastButton" Clicked="ToggleButton_Clicked" Text="&gt;" FontAttributes="Bold" CornerRadius="999"/>
+            
+        </HorizontalStackLayout>
     </Grid>
 
 </ContentPage>

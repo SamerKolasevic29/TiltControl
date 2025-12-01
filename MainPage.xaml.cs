@@ -94,6 +94,9 @@ namespace TiltControl
             });
         }
 
-       
+        private void ToggleButton_Clicked(object sender, EventArgs e)
+        {
+
+        }
     }
 }
