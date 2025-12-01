@@ -76,7 +76,21 @@ namespace TiltControl
 //          -All UI modifications must be executed on the main thread (MainThread.BeginInvokeOnMainThread).
             MainThread.BeginInvokeOnMainThread(() =>
             {
+//              Moving the disc with new calculating values in-time
                 AbsoluteLayout.SetLayoutBounds(Disc, new Rect(CurrentX, CurrentY, DiscSize, DiscSize));
+
+//              Displaying the original values from sensors
+                SensorXLabel.Text = $"{x_reading:F2} G";
+                SensorYLabel.Text = $"{y_reading:F2} G";
+
+//              formatting moving values in range [-100,100]
+//              but these sensors have inverted quadrants unlike the well-known ones from mathematics
+                int DisplayX = (int)((CurrentX - 0.5) * 200);
+                int DisplayY = (int)((CurrentY - 0.5) * 200);
+
+//              and displaying them on screen
+                CoordXLabel.Text = DisplayX.ToString("+0;-0;0");
+                CoordYLabel.Text = DisplayY.ToString("+0;-0;0");
             });
         }
 

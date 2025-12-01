@@ -3,15 +3,20 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="TiltControl.MainPage">
 
-    <Grid RowDefinitions="0.2*, 0.8*">
-        <Grid Grid.Row="0" ColumnDefinitions="*,*,*,*" Padding="10">
+    <Grid RowDefinitions="0.1*, 0.8*">
+        <Grid Grid.Row="0" RowDefinitions="*,*" ColumnDefinitions="*,*,*,*" Padding="10">
             
-            <Label Grid.Column="0" Text="X-sensor: " FontSize="Small" FontAttributes="Bold"/>
-            <Label Grid.Column="1" x:Name="SensorXLabel" Text="0.00" FontSize="Small"/>
+            <Label Grid.Row="0" Grid.Column="0" Text="X-sensor:" FontSize="Small" FontAttributes="Bold"/>
+            <Label Grid.Row="0" Grid.Column="1" x:Name="SensorXLabel" Text="0.00" FontSize="Small"/>
 
-            <Label Grid.Column="2" Text="Y-sensor: " FontSize="Small" FontAttributes="Bold"/>
-            <Label Grid.Column="3" x:Name="SnesorYLabel" Text="0.00" FontSize="Small"/>
-
+            <Label Grid.Row="0" Grid.Column="2" Text="Y-sensor:" FontSize="Small" FontAttributes="Bold"/>
+            <Label Grid.Row="0" Grid.Column="3" x:Name="SensorYLabel" Text="0.00" FontSize="Small"/>
+            
+            <Label Grid.Row="1" Grid.Column="0" Text="X coord: " FontSize="Small" FontAttributes="Bold" />
+            <Label Grid.Row="1" Grid.Column="1" x:Name="CoordXLabel" Text="0.00" FontSize="Small" />
+            <Label Grid.Row="1" Grid.Column="3" x:Name="CoordYLabel" Text="0.00" FontSize="Small" />
+            
+            <Label Grid.Row="1" Grid.Column="2" Text="Y coord: " FontSize="Small" FontAttributes="Bold" />
         </Grid>
         
         <AbsoluteLayout Grid.Row="1" Background="{StaticResource Gray900}">
