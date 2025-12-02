@@ -13,10 +13,14 @@ namespace TiltControl
 
 //      -defines the rate of movement (sensitivity to tilt)
 //      -Higher value means faster acceleration/ movement
-        private readonly double SpeedFactor = 0.02;
+        private double SpeedFactor = 0.02;              //removed 'readable' because of new features
 
 //      -fixed size of moving element (Disc) in device-indepent 
         private const double DiscSize = 50;
+
+//      -bool flags to track sensor state
+        private bool IsToggled = false;
+        private bool IsInverted = false;
 
 
 
@@ -24,28 +28,9 @@ namespace TiltControl
         {
             InitializeComponent();
 
-//                                 --- CORE TECHNOLOGY: Sensor Initialization and Robustness Check ---
-//         -checking does this device supporting wanting sensors
-            if (Accelerometer.Default.IsSupported)
-            {
-                try
-                {
-//                -Subscribing to the reading event and setting the speed to Game (fast updates ~50-60Hz)
-                    Accelerometer.Default.ReadingChanged += Accelerometer_ReadingChanged;
-                    Accelerometer.Default.Start(SensorSpeed.Game);
+             CheckSensor(this, EventArgs.Empty);
 
-                    System.Diagnostics.Debug.WriteLine("INFO: Accelerometer running successfully!");
-                }
 
-                catch (Exception ex) 
-                {
-                    System.Diagnostics.Debug.WriteLine($"ERROR: failed while running Accelerometer {ex.Message} ");
-                }
-            }
-            else
-            {
-                System.Diagnostics.Debug.WriteLine("WARNING: Accelerometer is not supported on this device!");
-            }
         }
 
         private void Accelerometer_ReadingChanged(object? sender, AccelerometerChangedEventArgs e)
@@ -57,6 +42,14 @@ namespace TiltControl
 //         -This prevents the disc from shaking when the device is resting flat.
             float x_reading = Math.Abs(data.Acceleration.X) > 0.02 ? data.Acceleration.X : 0;
             float y_reading = Math.Abs(data.Acceleration.Y) > 0.02 ? data.Acceleration.Y : 0;
+
+
+//          -something new: checking the state of inversion flag
+            if (IsInverted)
+            {
+                x_reading = -x_reading;
+                y_reading = -y_reading;
+            }
 
 //                              --- 2. Position Accumulation (Physics Logic) ---
 //          The tilt (reading) determines the continuous acceleration (velocity change).
@@ -91,12 +84,86 @@ namespace TiltControl
 //              and displaying them on screen
                 CoordXLabel.Text = DisplayX.ToString("+0;-0;0");
                 CoordYLabel.Text = DisplayY.ToString("+0;-0;0");
+                SpeedLabel.Text = $"{SpeedFactor:F2}";
             });
         }
 
-        private void ToggleButton_Clicked(object sender, EventArgs e)
-        {
 
+
+
+//                  --- UI Event Handlers ---
+
+//      Increasing speed factor and putting him in limits [0.01, 0.1]
+        private void SpeedUp(object sender, EventArgs e)
+        {
+            SpeedFactor += 0.01;
+            SpeedFactor = Math.Clamp(SpeedFactor, 0.01, 0.1);
+        }
+
+//      Decreasing speed factor and putting him in limits [0.01, 0.1]
+        private void SpeedDown(object sender, EventArgs e)
+        {
+            SpeedFactor -= 0.01;
+            SpeedFactor = Math.Clamp(SpeedFactor, 0.01, 0.1);
+        }
+
+//      Toggling inversion of sensor values
+        private void InvertValues(object sender, EventArgs e)
+        {
+            IsInverted = !IsInverted;
+            if(IsInverted)
+                InvertButton.BackgroundColor = (Color)Application.Current.Resources["Success"];
+            
+            else
+                InvertButton.BackgroundColor = (Color)Application.Current.Resources["Danger"];
+            
+        }
+
+//      Toggling sensor ON/OFF state
+        private void ToggleSensor(object sender, EventArgs e)
+        {
+            IsToggled = !IsToggled;
+            if (IsToggled)
+            {
+                ToggleButton.Text = "Sensor: ON";
+                ToggleButton.BackgroundColor = (Color)Application.Current.Resources["Success"];
+            }
+            else
+            {
+                ToggleButton.Text = "Sensor: OFF";
+                ToggleButton.BackgroundColor = (Color)Application.Current.Resources["Danger"]; ;
+            }
+
+            CheckSensor(this, EventArgs.Empty);
+        }
+
+//      Checking sensor state and starting/stopping it accordingly
+        private void CheckSensor(object sender, EventArgs e)
+        {
+            if (IsToggled)
+            {
+                try
+                {
+                    Accelerometer.Start(SensorSpeed.Game);
+                    Accelerometer.ReadingChanged += Accelerometer_ReadingChanged;
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error starting accelerometer: {ex.Message}");
+                }
+            }
+            else
+            {
+                try
+                {
+                    Accelerometer.Stop();
+                    Accelerometer.ReadingChanged -= Accelerometer_ReadingChanged;
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error stopping accelerometer: {ex.Message}");
+                }
+            }
         }
     }
 }

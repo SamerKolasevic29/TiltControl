@@ -19,8 +19,8 @@
     <Color x:Key="Black">#000000</Color>
 
     <Color x:Key="AccentLight">#7EC0EE</Color>
-    <Color x:Key="Danger">#C62828</Color>
-    <Color x:Key="Success">#2E7D32</Color>
+    <Color x:Key="Danger">#DC143C</Color>
+    <Color x:Key="Success">#5E936C</Color>
 
     <Color x:Key="Gray100">#E1E1E1</Color>
     <Color x:Key="Gray200">#C8C8C8</Color>
