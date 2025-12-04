@@ -93,11 +93,19 @@ namespace TiltControl
 
 //                  --- UI Event Handlers ---
 
-//      Increasing speed factor and putting him in limits [0.01, 0.1]
+//      Uptading speed label after changing speed factor
+        private void UpdateSpeedLabel()
+        {
+            SpeedLabel.Text = $"{SpeedFactor:F2}";
+        }
+
+        //      Increasing speed factor and putting him in limits [0.01, 0.1]
         private void SpeedUp(object sender, EventArgs e)
         {
             SpeedFactor += 0.01;
             SpeedFactor = Math.Clamp(SpeedFactor, 0.01, 0.1);
+
+            UpdateSpeedLabel();
         }
 
 //      Decreasing speed factor and putting him in limits [0.01, 0.1]
@@ -105,9 +113,13 @@ namespace TiltControl
         {
             SpeedFactor -= 0.01;
             SpeedFactor = Math.Clamp(SpeedFactor, 0.01, 0.1);
+
+            UpdateSpeedLabel();
         }
 
-//      Toggling inversion of sensor values
+
+
+        //      Toggling inversion of sensor values
         private void InvertValues(object sender, EventArgs e)
         {
             IsInverted = !IsInverted;
@@ -125,12 +137,12 @@ namespace TiltControl
             IsToggled = !IsToggled;
             if (IsToggled)
             {
-                ToggleButton.Text = "Sensor: ON";
+              
                 ToggleButton.BackgroundColor = (Color)Application.Current.Resources["Success"];
             }
             else
             {
-                ToggleButton.Text = "Sensor: OFF";
+                
                 ToggleButton.BackgroundColor = (Color)Application.Current.Resources["Danger"]; ;
             }
 

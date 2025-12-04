@@ -29,13 +29,13 @@
                AbsoluteLayout.LayoutFlags="PositionProportional" />
 
         </AbsoluteLayout>
-        <FlexLayout Grid.Row="2" Wrap="Wrap" JustifyContent="SpaceAround"   BackgroundColor="{StaticResource Gray950}">
+        <FlexLayout Grid.Row="2" Wrap="Wrap" JustifyContent="SpaceAround" AlignContent="Center"  BackgroundColor="{StaticResource Gray950}">
 
-            <Button x:Name="ToggleButton" Clicked="ToggleSensor"  Text="Sensor OFF"  VerticalOptions="Center" WidthRequest="120" BackgroundColor="{StaticResource Danger}"/>
-            <Button x:Name="SlowButton" Clicked="SpeedDown" Text="&lt;" FontAttributes="Bold" CornerRadius="999" VerticalOptions="Center" Padding="0,15" BackgroundColor="{StaticResource Gray600}"/>
-            <Label x:Name="SpeedLabel" Text="x1.0" HorizontalOptions="Center" VerticalOptions="Center" FontAttributes="Bold" FontSize="15" Margin="-5,0"/>
-            <Button x:Name="FastButton" Clicked="SpeedUp" Text="&gt;" FontAttributes="Bold" CornerRadius="999" VerticalOptions="Center" Padding="0,15" BackgroundColor="{StaticResource Gray600}"/>
-            <Button x:Name="InvertButton" Clicked="InvertValues" VerticalOptions="Center" Text="INVERT" BackgroundColor="{StaticResource Danger}"/>
+            <ImageButton x:Name="ToggleButton" Clicked="ToggleSensor" Source="power.png" VerticalOptions="Center" WidthRequest="50" Padding="10" CornerRadius="555" HeightRequest="50" BackgroundColor="{StaticResource Danger}"/> 
+            <Button x:Name="SlowButton" Clicked="SpeedDown" Text="&lt;" FontSize="25" FontAttributes="Bold" CornerRadius="30" VerticalOptions="Center"  BackgroundColor="{StaticResource Gray600}"/>
+            <Label x:Name="SpeedLabel" Text="0.02" HorizontalOptions="Center" VerticalOptions="Center" FontAttributes="Bold" FontSize="15" Margin="-5,0"/>
+            <Button x:Name="FastButton" Clicked="SpeedUp" Text="&gt;" FontSize="25" FontAttributes="Bold" CornerRadius="999" VerticalOptions="Center" BackgroundColor="{StaticResource Gray600}"/>
+            <ImageButton x:Name="InvertButton" Clicked="InvertValues" WidthRequest="50" HeightRequest="50" CornerRadius="25" Source="swap.png" BackgroundColor="{StaticResource Danger}"/>
         </FlexLayout>
     </Grid>
 
