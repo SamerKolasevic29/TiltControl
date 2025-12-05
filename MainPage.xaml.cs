@@ -13,10 +13,12 @@ namespace TiltControl
 
 //      -defines the rate of movement (sensitivity to tilt)
 //      -Higher value means faster acceleration/ movement
-        private readonly double SpeedFactor = 0.02;
+//      Edit: made adjustable for future tuning
+        private double SpeedFactor = 0.02;
 
-//      -fixed size of moving element (Disc) in device-indepent 
-        private const double DiscSize = 50;
+//      -fixed size of moving element (Disc) in device-indepent
+//      Edit: removing const to allow future adjustments if neededY
+        private double DiscSize = 50;
 
 
 
@@ -37,7 +39,7 @@ namespace TiltControl
                     System.Diagnostics.Debug.WriteLine("INFO: Accelerometer running successfully!");
                 }
 
-                catch (Exception ex) 
+                catch (Exception ex)
                 {
                     System.Diagnostics.Debug.WriteLine($"ERROR: failed while running Accelerometer {ex.Message} ");
                 }
@@ -80,6 +82,24 @@ namespace TiltControl
             });
         }
 
-       
+//      Cleanup: Stop the accelerometer when the page disappears
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            if (Accelerometer.Default.IsMonitoring)
+            {
+                try 
+                {
+                    Accelerometer.Default.Stop();
+                    Accelerometer.Default.ReadingChanged -= Accelerometer_ReadingChanged;
+                    Debug.WriteLine("INFO: Accelerometer stopped.");
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"ERROR: failed while stopping Accelerometer {ex.Message} ");
+                }
+            }
+
+        }
     }
 }
