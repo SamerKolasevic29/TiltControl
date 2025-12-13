@@ -1,33 +1,33 @@
 ﻿using Microsoft.Maui.Devices.Sensors;
-using System.Diagnostics;
+using Microsoft.Maui.Layouts;
 using System;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using TiltControl.Models;
 
 namespace TiltControl
 {
     public partial class MainPage : ContentPage
     {
-//                                             --- State variables ---
-//          current proportional position (0.5 = center)
-        private double CurrentX = 0.5;
-        private double CurrentY = 0.5;
+        private double LayoutWidth;
+        private double LayoutHeight;
+        private bool IsLayoutInitialized = false;
 
-//      -defines the rate of movement (sensitivity to tilt)
-//      -Higher value means faster acceleration/ movement
-//      Edit: made adjustable for future tuning
-        private double SpeedFactor = 0.02;
+        Disc myDisc; 
+        Obstacle myObstacle;
 
-//      -fixed size of moving element (Disc) in device-indepent
-//      Edit: removing const to allow future adjustments if neededY
-        private double DiscSize = 50;
-
-
+        public BoxView DiscUIElement;
 
         public MainPage()
         {
             InitializeComponent();
 
-//                                 --- CORE TECHNOLOGY: Sensor Initialization and Robustness Check ---
-//         -checking does this device supporting wanting sensors
+            myDisc = new Disc(0.5, 0.5, 80, Colors.Blue);
+            myObstacle = new Obstacle(0.7, 0.7, 80, Colors.Red);
+
+
+            //                                 --- CORE TECHNOLOGY: Sensor Initialization and Robustness Check ---
+            //         -checking does this device supporting wanting sensors
             if (Accelerometer.Default.IsSupported)
             {
                 try
@@ -50,37 +50,55 @@ namespace TiltControl
             }
         }
 
+        private void GameLayout_SizeChanged(object sender, EventArgs e)
+        {
+            if (sender is AbsoluteLayout GameLayout && !IsLayoutInitialized)
+            {
+                LayoutWidth = GameLayout.Width;
+                LayoutHeight = GameLayout.Height;
+                
+                myObstacle.RecalculateDUICenter(LayoutWidth, LayoutHeight);
+                DrawObstacleOnScreen(myObstacle);
+
+                myDisc.RecalculateDUICenter(LayoutWidth, LayoutHeight);
+                DrawDiscOnScreen(myDisc);
+
+                IsLayoutInitialized = true;
+                Debug.WriteLine($"INFO: Layout initialized with size {LayoutWidth}x{LayoutHeight}");
+            }
+        }
+
         private void Accelerometer_ReadingChanged(object? sender, AccelerometerChangedEventArgs e)
         {
+            if (!IsLayoutInitialized) return;
+
+
             var data = e.Reading;
 
-//                                    --- 1. Deadzone Filtering ---
-//         -If the tilt magnitude is too small (e.g., < 0.02 G), treat it as zero.
-//         -This prevents the disc from shaking when the device is resting flat.
+
             float x_reading = Math.Abs(data.Acceleration.X) > 0.02 ? data.Acceleration.X : 0;
             float y_reading = Math.Abs(data.Acceleration.Y) > 0.02 ? data.Acceleration.Y : 0;
 
-//                              --- 2. Position Accumulation (Physics Logic) ---
-//          The tilt (reading) determines the continuous acceleration (velocity change).
-//          -X-axis: Tilting right (positive Accel.X) decreases proportional X coordinate (Screen coordinates typically grow right).
-//          -Y-axis: Tilting towards the user (positive Accel.Y) increases proportional Y coordinate (Screen coordinates grow down).
-            CurrentX -= x_reading * SpeedFactor;
-            CurrentY += y_reading * SpeedFactor;
+            myDisc.MakePrediction(x_reading, y_reading);
 
-//                          --- 3. Boundary Clamping ---
-//          -Ensuring the calculated position stays within the proportional range [0, 1].
-//          -This prevents the disc from flying off the screen edges.
-            CurrentX = Math.Clamp(CurrentX, 0, 1);
-            CurrentY = Math.Clamp(CurrentY, 0, 1);
+           if(Disc.CheckCollision(myDisc, myObstacle, LayoutWidth, LayoutHeight))
+            
+                myDisc.Effect();
+            
+        
+           
+             myDisc.CommitMove();
+             myDisc.RecalculateDUICenter(LayoutWidth, LayoutHeight);
 
 
-//                                  --- 4. UI Update on Main Thread ---
-//          -All UI modifications must be executed on the main thread (MainThread.BeginInvokeOnMainThread).
+
             MainThread.BeginInvokeOnMainThread(() =>
             {
-                AbsoluteLayout.SetLayoutBounds(Disc, new Rect(CurrentX, CurrentY, DiscSize, DiscSize));
+                AbsoluteLayout.SetLayoutBounds(DiscUIElement,
+                    new Rect(myDisc.X, myDisc.Y, myDisc.ObjectSize, myDisc.ObjectSize));
             });
         }
+        
 
 //      Cleanup: Stop the accelerometer when the page disappears
         protected override void OnDisappearing()
@@ -100,6 +118,41 @@ namespace TiltControl
                 }
             }
 
+        }
+
+        private void DrawObstacleOnScreen(Obstacle o)
+        {
+            var box = new BoxView
+            {
+                Color = o.DiscColor,
+                BackgroundColor = Colors.Transparent,
+                CornerRadius = o.ObjectRadius,
+                WidthRequest = o.ObjectSize,
+                HeightRequest = o.ObjectSize
+            };
+            
+            AbsoluteLayout.SetLayoutBounds(box, new Rect(o.X, o.Y, o.ObjectSize, o.ObjectSize));
+            AbsoluteLayout.SetLayoutFlags(box, AbsoluteLayoutFlags.PositionProportional);
+            GameLayout.Children.Add(box);
+        }
+
+        public void DrawDiscOnScreen(Disc d)
+        {
+          
+            DiscUIElement = new BoxView
+            {
+                Color = d.DiscColor,
+                BackgroundColor = Colors.Transparent,
+                WidthRequest = d.ObjectSize,
+                HeightRequest = d.ObjectSize,
+                CornerRadius = d.ObjectRadius
+            };
+
+          
+            AbsoluteLayout.SetLayoutBounds(DiscUIElement, new Rect(d.X, d.Y, d.ObjectSize, d.ObjectSize));
+            AbsoluteLayout.SetLayoutFlags(DiscUIElement, AbsoluteLayoutFlags.PositionProportional);
+
+            GameLayout.Children.Add(DiscUIElement);
         }
     }
 }
