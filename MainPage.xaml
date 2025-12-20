@@ -3,6 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="TiltControl.MainPage">
 
+
+    <?-- Game Layout -->
     <AbsoluteLayout x:Name="GameLayout" 
                     Background="{StaticResource Gray900}"
                     SizeChanged="GameLayout_SizeChanged">

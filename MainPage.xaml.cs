@@ -22,18 +22,19 @@ namespace TiltControl
         {
             InitializeComponent();
 
-            myDisc = new Disc(0.5, 0.5, 80, Colors.Blue);
-            myObstacle = new Obstacle(0.7, 0.7, 80, Colors.Red);
+            // Initialize game objects
+            myDisc = new Disc(0.5, 0.5, 80, (Color)Application.Current.Resources["Tertiary"]);
+            myObstacle = new Obstacle(0.7, 0.7, 80, (Color)Application.Current.Resources["Danger"]);
 
 
-            //                                 --- CORE TECHNOLOGY: Sensor Initialization and Robustness Check ---
-            //         -checking does this device supporting wanting sensors
+            // Setup Accelerometer if supported
             if (Accelerometer.Default.IsSupported)
             {
                 try
                 {
-//                -Subscribing to the reading event and setting the speed to Game (fast updates ~50-60Hz)
+                    
                     Accelerometer.Default.ReadingChanged += Accelerometer_ReadingChanged;
+                    // Start Accelerometer with Game speed (about 20ms intervals)
                     Accelerometer.Default.Start(SensorSpeed.Game);
 
                     System.Diagnostics.Debug.WriteLine("INFO: Accelerometer running successfully!");
@@ -44,12 +45,13 @@ namespace TiltControl
                     System.Diagnostics.Debug.WriteLine($"ERROR: failed while running Accelerometer {ex.Message} ");
                 }
             }
+            // if not supported, log a warning
             else
             {
                 System.Diagnostics.Debug.WriteLine("WARNING: Accelerometer is not supported on this device!");
             }
         }
-
+        // Layout SizeChanged event handler to get actual size and initialize game objects positions
         private void GameLayout_SizeChanged(object sender, EventArgs e)
         {
             if (sender is AbsoluteLayout GameLayout && !IsLayoutInitialized)
@@ -63,44 +65,49 @@ namespace TiltControl
                 myDisc.RecalculateDUICenter(LayoutWidth, LayoutHeight);
                 DrawDiscOnScreen(myDisc);
 
+                // Mark layout as initialized
                 IsLayoutInitialized = true;
                 Debug.WriteLine($"INFO: Layout initialized with size {LayoutWidth}x{LayoutHeight}");
             }
         }
 
+        // Accelerometer ReadingChanged event handler to update game state
         private void Accelerometer_ReadingChanged(object? sender, AccelerometerChangedEventArgs e)
         {
+            // Ensure layout is initialized before processing
             if (!IsLayoutInitialized) return;
 
-
+            // Get accelerometer data
             var data = e.Reading;
 
-
+            // Deadzone filtering (±0.02)
             float x_reading = Math.Abs(data.Acceleration.X) > 0.02 ? data.Acceleration.X : 0;
             float y_reading = Math.Abs(data.Acceleration.Y) > 0.02 ? data.Acceleration.Y : 0;
 
+            // 1. PREDICTION: calculate predicted position based on current reading
             myDisc.MakePrediction(x_reading, y_reading);
 
-           if(Disc.CheckCollision(myDisc, myObstacle, LayoutWidth, LayoutHeight))
-            
-                myDisc.Effect();
-            
-        
-           
-             myDisc.CommitMove();
-             myDisc.RecalculateDUICenter(LayoutWidth, LayoutHeight);
+            // 2. COLLISION DETECTION AND RESOLUTION with the obstacle
+            myDisc.ResolveCollision(myObstacle, LayoutWidth, LayoutHeight);
 
+            // 3. COMMIT: commit the move if no collision detected
+            myDisc.CommitMove();
 
+            // Recalculate DIU center for UI update
+            myDisc.RecalculateDUICenter(LayoutWidth, LayoutHeight);
 
+            // 4. UI UPDATE
             MainThread.BeginInvokeOnMainThread(() =>
             {
+
+
                 AbsoluteLayout.SetLayoutBounds(DiscUIElement,
-                    new Rect(myDisc.X, myDisc.Y, myDisc.ObjectSize, myDisc.ObjectSize));
+          new Rect(myDisc.X, myDisc.Y, myDisc.ObjectSize, myDisc.ObjectSize));
             });
         }
-        
 
-//      Cleanup: Stop the accelerometer when the page disappears
+
+        //      Cleanup: Stop the accelerometer when the page disappears
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
@@ -109,6 +116,7 @@ namespace TiltControl
                 try 
                 {
                     Accelerometer.Default.Stop();
+                    // Unsubscribe from the event
                     Accelerometer.Default.ReadingChanged -= Accelerometer_ReadingChanged;
                     Debug.WriteLine("INFO: Accelerometer stopped.");
                 }
@@ -119,7 +127,7 @@ namespace TiltControl
             }
 
         }
-
+        // Method to draw obstacle on the screen
         private void DrawObstacleOnScreen(Obstacle o)
         {
             var box = new BoxView
@@ -135,7 +143,7 @@ namespace TiltControl
             AbsoluteLayout.SetLayoutFlags(box, AbsoluteLayoutFlags.PositionProportional);
             GameLayout.Children.Add(box);
         }
-
+        // Method to draw disc on the screen
         public void DrawDiscOnScreen(Disc d)
         {
           

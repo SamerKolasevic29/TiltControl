@@ -17,7 +17,7 @@ namespace TiltControl.Models
             }
 
 
-        //      calculating predicted position based on current reading without committing the move
+        // calculating predicted position based on current reading without committing the move
         public void MakePrediction(float readingX, float readingY)
         {
             double deltaX = -readingX * SpeedFactor;
@@ -28,35 +28,50 @@ namespace TiltControl.Models
         }
 
 
-//      applying predicted position as actual position when collision detected (no movement)
-        public void Effect()
-        {
-            PredictedX = X;
-            PredictedY = Y;
-        }
-
 //      committing the move when no collision detected
         public void CommitMove()
         {    
             X = PredictedX;
             Y = PredictedY;
         }
-//      static method to check collision between Disc and Obstacle
-        public static bool CheckCollision(Disc d, Obstacle o, double layoutWidth, double layoutHeight)
+        // Collision detection and resolution with an obstacle
+        public void ResolveCollision(Obstacle o, double layoutWidth, double layoutHeight)
         {
-//          Convert predicted normalized coordinates to DIU coordinates
-            double predictedXInDIU = (d.PredictedX * (layoutWidth - d.ObjectSize)) + d.ObjectRadius;
-            double predictedYInDIU = (d.PredictedY * (layoutHeight - d.ObjectSize)) + d.ObjectRadius;
+            // 1. Convert PredictedX/Y from 0-1 to DIU coordinates
+            double predictedXInDIU = (PredictedX * (layoutWidth - ObjectSize)) + ObjectRadius;
+            double predictedYInDIU = (PredictedY * (layoutHeight - ObjectSize)) + ObjectRadius;
 
-//          Calculate squared distance between centers
-            double dxSquared = (predictedXInDIU - o.XInDUI) * (predictedXInDIU - o.XInDUI);
-            double dySquared = (predictedYInDIU - o.YInDUI) * (predictedYInDIU - o.YInDUI);
+            // 2. Calculate vector from obstacle center to predicted position
+            double vecX = predictedXInDIU - o.XInDUI;
+            double vecY = predictedYInDIU - o.YInDUI;
 
-//          Calculate squared sum of radiuss
-            double radiusSumSquared = (d.ObjectRadius + o.ObjectRadius) * (d.ObjectRadius + o.ObjectRadius);
+            // 3. Calculate distance between centers
+            double distance = Math.Sqrt((vecX * vecX) + (vecY * vecY));
 
-//          Check for collision
-            return (dxSquared + dySquared) < radiusSumSquared;
+            // 4. Calculate minimum distance to avoid collision
+            double minDistance = ObjectRadius + o.ObjectRadius;
+
+            // 5. if distance is less than minimum distance, we have a collision
+            if (distance < minDistance)
+            {
+                // Prevent division by zero
+                // If the distance is zero, we can arbitrarily set vecX to 1
+                if (distance == 0) { vecX = 1; distance = 1; }
+
+                // Normalize the vector from obstacle center to predicted position
+                double nX = vecX / distance;
+                double nY = vecY / distance;
+
+                // new position is: obstacle center + normalized vector * minDistance
+                // this places the disc just outside the obstacle
+                double newXInDIU = o.XInDUI + (nX * minDistance);
+                double newYInDIU = o.YInDUI + (nY * minDistance);
+
+                // Convert back to 0-1 range for PredictedX/Y
+                // PredictedX/Y = (newPositionInDIU - ObjectRadius) / (layoutSize - ObjectSize)
+                PredictedX = (newXInDIU - ObjectRadius) / (layoutWidth - ObjectSize);
+                PredictedY = (newYInDIU - ObjectRadius) / (layoutHeight - ObjectSize);
+            }
         }
     }
 }
