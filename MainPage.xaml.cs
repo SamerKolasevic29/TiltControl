@@ -74,13 +74,8 @@ namespace TiltControl
             CurrentY = Math.Clamp(CurrentY, 0, 1);
 
 
-//                                  --- 4. UI Update on Main Thread ---
-//          -All UI modifications must be executed on the main thread (MainThread.BeginInvokeOnMainThread).
-            MainThread.BeginInvokeOnMainThread(() =>
-            {
-                AbsoluteLayout.SetLayoutBounds(Disc, new Rect(CurrentX, CurrentY, DiscSize, DiscSize));
-            });
-        }
+}
+           
 
 //      Cleanup: Stop the accelerometer when the page disappears
         protected override void OnDisappearing()

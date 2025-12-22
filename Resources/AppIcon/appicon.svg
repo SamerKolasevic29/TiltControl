@@ -1,5 +1,23 @@
 <svg width="771" height="771" viewBox="0 0 771 771" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="771" height="771" rx="75" fill="#2C2C2C"/>
-<circle cx="252.447" cy="452.447" r="80.4473" fill="#456882"/>
-<circle cx="386.447" cy="236.447" r="80.4473" fill="black"/>
+<g clip-path="url(#clip0_34_52)">
+<path d="M696 0H75C33.5786 0 0 33.5786 0 75V696C0 737.421 33.5786 771 75 771H696C737.421 771 771 737.421 771 696V75C771 33.5786 737.421 0 696 0Z" fill="url(#paint0_linear_34_52)"/>
+</g>
+<rect x="283" y="347" width="206" height="29" rx="14.5" fill="#00454A" stroke="#2E2E2E" stroke-width="2"/>
+<rect x="237" y="304" width="298" height="29" rx="14.5" fill="#0699A4" stroke="#2E2E2E" stroke-width="2"/>
+<rect x="196" y="262" width="380" height="28" rx="14" fill="#00EEFF" stroke="#2E2E2E" stroke-width="2"/>
+<rect x="196" y="479" width="380" height="29" rx="14.5" fill="#1EFF00" stroke="#2E2E2E" stroke-width="2"/>
+<rect x="237" y="437" width="298" height="28" rx="14" fill="#0F8400" stroke="#2E2E2E" stroke-width="2"/>
+<rect x="283" y="394" width="206" height="29" rx="14.5" fill="#083A02" stroke="#2E2E2E" stroke-width="2"/>
+<defs>
+<linearGradient id="paint0_linear_34_52" x1="309.5" y1="-55.5" x2="359.5" y2="902.5" gradientUnits="userSpaceOnUse">
+<stop stop-color="#007780"/>
+<stop offset="0.295427"/>
+<stop offset="0.499932"/>
+<stop offset="0.649038"/>
+<stop offset="0.992688" stop-color="#16BF00"/>
+</linearGradient>
+<clipPath id="clip0_34_52">
+<rect width="771" height="771" fill="white"/>
+</clipPath>
+</defs>
 </svg>

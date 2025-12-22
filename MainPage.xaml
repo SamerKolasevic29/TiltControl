@@ -1,17 +1,74 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="TiltControl.MainPage">
+             x:Class="TiltControl.MainPage"
+             BackgroundColor="Black">
 
-    <AbsoluteLayout Background="{StaticResource Gray900}">
+    <Grid BackgroundColor="Black" Margin="70, 20" RowSpacing="15" ColumnSpacing="15"
+            RowDefinitions="*,*,*,*,*,*,*"
+            ColumnDefinitions="*,*,*,*,*,*,*,*,*">
 
-        <BoxView x:Name="Disc"
-                 BackgroundColor="Transparent"
-                   Color="{StaticResource Tertiary}"
-                   CornerRadius="70"
-                   AbsoluteLayout.LayoutBounds="0.5 , 0.5, 50, 50"
-                   AbsoluteLayout.LayoutFlags="PositionProportional" />
+                      <?FOWARD TILES ?>
+        <Border Margin="0" StrokeShape="RoundRectangle 30" x:Name="F1"
+                Grid.Row="2" Stroke="{StaticResource Gray900}" 
+                Grid.Column="3" Grid.ColumnSpan="3"/>
+
+        <Border Margin="0" StrokeShape="RoundRectangle 30" x:Name="F2"
+                Grid.Row="1" Stroke="{StaticResource Gray900}" 
+                Grid.Column="2" Grid.ColumnSpan="5"/>
+
+        <Border Margin="0" StrokeShape="RoundRectangle 30" x:Name="F3"
+                Grid.Row="0" Stroke="{StaticResource Gray900}"            
+                Grid.Column="1" Grid.ColumnSpan="7"/>
+
         
-    </AbsoluteLayout>
+                        <?BACK TILES ?>
+
+        <Border Margin="0" StrokeShape="RoundRectangle 30" x:Name="B1"
+                Grid.Row="4" Stroke="{StaticResource Gray900}"
+                Grid.Column="3" Grid.ColumnSpan="3"/>
+
+        <Border Margin="0" StrokeShape="RoundRectangle 30" x:Name="B2"
+                Grid.Row="5" Stroke="{StaticResource Gray900}"
+                Grid.Column="2" Grid.ColumnSpan="5"/>
+
+        <Border Margin="0" StrokeShape="RoundRectangle 30" x:Name="B3"
+                Grid.Row="6" Stroke="{StaticResource Gray900}"
+                Grid.Column="1" Grid.ColumnSpan="7"/>
+        
+                       <?LEFT TILES ?>
+
+        <Border Margin="15,0,0,0" StrokeShape="RoundRectangle 30" x:Name="L1"
+                       Grid.Row="2"  Grid.RowSpan="3" Stroke="{StaticResource Gray900}"
+                       Grid.Column="2" />
+
+        <Border Margin="15,0,0,0" StrokeShape="RoundRectangle 30" x:Name="L2"
+                       Grid.Row="1"  Grid.RowSpan="5" Stroke="{StaticResource Gray900}"
+                       Grid.Column="1" />
+
+        <Border Margin="15,0,0,0" StrokeShape="RoundRectangle 30" x:Name="L3"
+                        Grid.Row="0"  Grid.RowSpan="7" Stroke="{StaticResource Gray900}"
+                        Grid.Column="0" />
+
+                        <?RIGHT TILES ?>
+
+        <Border Margin="0,0,15,0" StrokeShape="RoundRectangle 30" x:Name="R1"
+                       Grid.Row="2"  Grid.RowSpan="3" Stroke="{StaticResource Gray900}"
+                       Grid.Column="6" />
+
+        <Border Margin="0,0,15,0" StrokeShape="RoundRectangle 30" x:Name="R2"
+                       Grid.Row="1"  Grid.RowSpan="5" Stroke="{StaticResource Gray900}"
+                       Grid.Column="7" />
+
+        <Border Margin="0,0,15,0" StrokeShape="RoundRectangle 30" x:Name="R3"
+                        Grid.Row="0"  Grid.RowSpan="7" Stroke="{StaticResource Gray900}"
+                        Grid.Column="8" />
+        
+                    <?FEEDBACK LABEL ?>
+
+        <Label Grid.Row="3" HorizontalTextAlignment="Center" Text="STOPSTOP" FontSize="25" x:Name="FeedbackLabel"
+               Grid.Column="3" Grid.ColumnSpan="3" TextColor="{StaticResource Gray300}" />
+
+    </Grid>
 
 </ContentPage>

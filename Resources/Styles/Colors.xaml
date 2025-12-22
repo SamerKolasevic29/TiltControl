@@ -15,6 +15,18 @@
     <Color x:Key="Tertiary">#456882</Color>
     <Color x:Key="BackgroundLight">#F7F7F7</Color>
 
+    <!-- Color for feedback tiles-->
+    
+    <!--Cyan for aceleration tiles -->
+    <Color x:Key="DarkDarkCyan">#00454A</Color>
+    <Color x:Key="DarkCyan">#0699A4</Color>
+    <Color x:Key="Cyan">#00EEFF</Color>
+
+    <!--Green for direction tiles -->
+    <Color x:Key="DarkDarkLime">#083A02</Color>
+    <Color x:Key="DarkLime">#0F8400</Color>
+    <Color x:Key="Lime">#1EFF00</Color>
+
     <Color x:Key="White">#FFFFFF</Color>
     <Color x:Key="Black">#000000</Color>
 
