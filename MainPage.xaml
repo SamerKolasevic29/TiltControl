@@ -7,21 +7,21 @@
         <Grid Grid.Row="0" RowDefinitions="*,*" ColumnDefinitions="Auto,*,Auto,*,Auto,*" Padding="10" BackgroundColor="{StaticResource Gray950}" ColumnSpacing="0" RowSpacing="0">
             
             <Label Grid.Row="0" Grid.Column="0" Text="X-sensor: " FontSize="12" FontAttributes="Bold" TextColor="{StaticResource Gray400}"/>
-            <Label Grid.Row="0" Grid.Column="1" x:Name="SensorXLabel" Text="0.00" FontSize="12" />
+            <Label Grid.Row="0" Grid.Column="1" x:Name="SensorXLabel" Text="0.00" FontSize="12" TextColor="White"/>
 
             <Label Grid.Row="0" Grid.Column="2" Text="Y-sensor: " FontSize="12" FontAttributes="Bold" TextColor="{StaticResource Gray400}"/>
-            <Label Grid.Row="0" Grid.Column="3" x:Name="SensorYLabel" Text="0.00" FontSize="12"/>
+            <Label Grid.Row="0" Grid.Column="3" x:Name="SensorYLabel" Text="0.00" FontSize="12" TextColor="White"/>
 
             <Label Grid.Row="1" Grid.Column="0" Text="X coord: " FontSize="12" FontAttributes="Bold" TextColor="{StaticResource Gray400}"/>
-            <Label Grid.Row="1" Grid.Column="1" x:Name="CoordXLabel" Text="0.00" FontSize="12" />
+            <Label Grid.Row="1" Grid.Column="1" x:Name="CoordXLabel" Text="0.00" FontSize="12" TextColor="White"/>
 
-            <Label Grid.Row="1" Grid.Column="3" x:Name="CoordYLabel" Text="0.00" FontSize="12" />
+            <Label Grid.Row="1" Grid.Column="3" x:Name="CoordYLabel" Text="0.00" FontSize="12" TextColor="White"/>
             <Label Grid.Row="1" Grid.Column="2" Text="Y coord: " FontSize="12" FontAttributes="Bold" TextColor="{StaticResource Gray400}"/>
 
             <Label Grid.Row="0" Grid.Column="4" Text="SpeedFactor:  " FontSize="12" FontAttributes="Bold" TextColor="{StaticResource Gray400}"/>
-            <Label Grid.Row="0" Grid.Column="5" Text="0.02" x:Name="SpeedLabel" FontSize="12"/>
+            <Label Grid.Row="0" Grid.Column="5" Text="0.02" x:Name="SpeedLabel" FontSize="12" TextColor="White"/>
             <Label Grid.Row="1" Grid.Column="4" Text="Disc Size: " FontSize="12" FontAttributes="Bold" TextColor="{StaticResource Gray400}"/>
-            <Label Grid.Row="1" Grid.Column="5" Text="50" x:Name="SizeLabel" FontSize="12"/>
+            <Label Grid.Row="1" Grid.Column="5" Text="50" x:Name="SizeLabel" FontSize="12" TextColor="White"/>
         </Grid>
         
         <AbsoluteLayout Grid.Row="1" Background="{StaticResource Gray900}">
