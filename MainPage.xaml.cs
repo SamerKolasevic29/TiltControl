@@ -1,25 +1,15 @@
-﻿using Microsoft.Maui.Devices.Sensors;
+﻿
 using System.Diagnostics;
-using System;
+using TiltControl.Enums;
+using TiltControl.Logic;
+
 
 namespace TiltControl
 {
     public partial class MainPage : ContentPage
     {
-//                                             --- State variables ---
-//          current proportional position (0.5 = center)
-        private double CurrentX = 0.5;
-        private double CurrentY = 0.5;
 
-//      -defines the rate of movement (sensitivity to tilt)
-//      -Higher value means faster acceleration/ movement
-//      Edit: made adjustable for future tuning
-        private double SpeedFactor = 0.02;
-
-//      -fixed size of moving element (Disc) in device-indepent
-//      Edit: removing const to allow future adjustments if neededY
-        private double DiscSize = 50;
-
+        public (AccState acc, StrState str) FeedbackState = (acc: AccState.STOP, str: StrState.STOP);
 
 
         public MainPage()
@@ -54,36 +44,29 @@ namespace TiltControl
         {
             var data = e.Reading;
 
-//                                    --- 1. Deadzone Filtering ---
-//         -If the tilt magnitude is too small (e.g., < 0.02 G), treat it as zero.
-//         -This prevents the disc from shaking when the device is resting flat.
+            //                                    --- 1. Deadzone Filtering ---
+            //         -If the tilt magnitude is too small (e.g., < 0.02 G), treat it as zero.
+            //         -This prevents the disc from shaking when the device is resting flat.
             float x_reading = Math.Abs(data.Acceleration.X) > 0.02 ? data.Acceleration.X : 0;
             float y_reading = Math.Abs(data.Acceleration.Y) > 0.02 ? data.Acceleration.Y : 0;
 
-//                              --- 2. Position Accumulation (Physics Logic) ---
-//          The tilt (reading) determines the continuous acceleration (velocity change).
-//          -X-axis: Tilting right (positive Accel.X) decreases proportional X coordinate (Screen coordinates typically grow right).
-//          -Y-axis: Tilting towards the user (positive Accel.Y) increases proportional Y coordinate (Screen coordinates grow down).
-            CurrentX -= x_reading * SpeedFactor;
-            CurrentY += y_reading * SpeedFactor;
+            FeedbackState = ControllerMapper.MapReadings(x_reading, y_reading);
 
-//                          --- 3. Boundary Clamping ---
-//          -Ensuring the calculated position stays within the proportional range [0, 1].
-//          -This prevents the disc from flying off the screen edges.
-            CurrentX = Math.Clamp(CurrentX, 0, 1);
-            CurrentY = Math.Clamp(CurrentY, 0, 1);
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+
+                UpdateUI(FeedbackState.acc, FeedbackState.str);
+            });
+        }
 
 
-}
-           
-
-//      Cleanup: Stop the accelerometer when the page disappears
+        //      Cleanup: Stop the accelerometer when the page disappears
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
             if (Accelerometer.Default.IsMonitoring)
             {
-                try 
+                try
                 {
                     Accelerometer.Default.Stop();
                     Accelerometer.Default.ReadingChanged -= Accelerometer_ReadingChanged;
@@ -94,7 +77,61 @@ namespace TiltControl
                     Debug.WriteLine($"ERROR: failed while stopping Accelerometer {ex.Message} ");
                 }
             }
-
         }
+
+            private void UpdateUI(AccState acc, StrState str)
+        {
+            // 1. Dohvati boje iz resursa
+            var ddc = (Color)Application.Current.Resources["DarkDarkCyan"];
+            var dc = (Color)Application.Current.Resources["DarkCyan"];
+            var c = (Color)Application.Current.Resources["Cyan"];
+
+            var ddl = (Color)Application.Current.Resources["DarkDarkLime"];
+            var dl = (Color)Application.Current.Resources["DarkLime"];
+            var l = (Color)Application.Current.Resources["Lime"];
+
+            // 2. Ugasi sve prije paljenja novih
+            ResetBorders();
+
+            // 3. Logika za gas (Acceleration) - Koristimo switch expression koji si naučio!
+            switch (acc)
+            {
+                case AccState.FWD3: F3.BackgroundColor = c; goto case AccState.FWD2;
+                case AccState.FWD2: F2.BackgroundColor = dc; goto case AccState.FWD1;
+                case AccState.FWD1: F1.BackgroundColor = ddc; break;
+
+                case AccState.BCK3: B3.BackgroundColor = c; goto case AccState.BCK2;
+                case AccState.BCK2: B2.BackgroundColor = dc; goto case AccState.BCK1;
+                case AccState.BCK1: B1.BackgroundColor = ddc; break;
+            }
+
+            // 4. Logika za skretanje (Steering)
+            switch (str)
+            {
+                case StrState.RGT3: R3.BackgroundColor = l; goto case StrState.RGT2;
+                case StrState.RGT2: R2.BackgroundColor = dl; goto case StrState.RGT1;
+                case StrState.RGT1: R1.BackgroundColor = ddl; break;
+
+                case StrState.LFT3: L3.BackgroundColor = l; goto case StrState.LFT2;
+                case StrState.LFT2: L2.BackgroundColor = dl; goto case StrState.LFT1;
+                case StrState.LFT1: L1.BackgroundColor = ddl; break;
+            }
+
+            // 5. Finalni string
+            FeedbackLabel.Text = $"{acc}{str}";
+        }
+
+        private void ResetBorders()
+        {
+            var gray = (Color)Application.Current.Resources["Gray900"];
+            var allBorders = new[] { F1, F2, F3, B1, B2, B3, L1, L2, L3, R1, R2, R3 };
+
+            foreach (var border in allBorders)
+            {
+                border.BackgroundColor = gray;
+            }
+        }
+
     }
-}
+    }
+
