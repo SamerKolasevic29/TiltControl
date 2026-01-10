@@ -4,70 +4,106 @@
              x:Class="TiltControl.MainPage"
              BackgroundColor="Black">
 
-    <Grid BackgroundColor="Black" Margin="70, 20" RowSpacing="15" ColumnSpacing="15"
-            RowDefinitions="*,*,*,*,*,*,*"
-            ColumnDefinitions="*,*,*,*,*,*,*,*,*">
+    <Grid BackgroundColor="Black" Margin="70, 20" RowSpacing="10" ColumnSpacing="12" 
+            RowDefinitions="*,*,*,*,*,*,*,*,*,*,*"
+            ColumnDefinitions="*,*,*,*,*,*,*,*,*,*,*,*,*">
 
                       <?FOWARD TILES ?>
         <Border Margin="0" StrokeShape="RoundRectangle 30" x:Name="F1"
-                Grid.Row="2" Stroke="{StaticResource Gray900}" 
-                Grid.Column="3" Grid.ColumnSpan="3"/>
+                Grid.Row="4" Stroke="{StaticResource Gray900}" 
+                Grid.Column="5" Grid.ColumnSpan="3"/>
 
         <Border Margin="0" StrokeShape="RoundRectangle 30" x:Name="F2"
-                Grid.Row="1" Stroke="{StaticResource Gray900}" 
-                Grid.Column="2" Grid.ColumnSpan="5"/>
+                Grid.Row="3" Stroke="{StaticResource Gray900}" 
+                Grid.Column="4" Grid.ColumnSpan="5"/>
 
         <Border Margin="0" StrokeShape="RoundRectangle 30" x:Name="F3"
-                Grid.Row="0" Stroke="{StaticResource Gray900}"            
-                Grid.Column="1" Grid.ColumnSpan="7"/>
+                Grid.Row="2" Stroke="{StaticResource Gray900}"            
+                Grid.Column="3" Grid.ColumnSpan="7"/>
 
-        
-                        <?BACK TILES ?>
+        <Border Margin="0" StrokeShape="RoundRectangle 30" x:Name="F4"
+                Grid.Row="1" Stroke="Transparent" BackgroundColor="Transparent"            
+                Grid.Column="2" Grid.ColumnSpan="9"/>
+
+        <Border Margin="0" StrokeShape="RoundRectangle 30" x:Name="F5"
+                Grid.Row="0" Stroke="{StaticResource Gray900}"            
+                Grid.Column="1" Grid.ColumnSpan="11"/>
+
+       
+
+
+                                <?BACK TILES ?>
 
         <Border Margin="0" StrokeShape="RoundRectangle 30" x:Name="B1"
-                Grid.Row="4" Stroke="{StaticResource Gray900}"
-                Grid.Column="3" Grid.ColumnSpan="3"/>
+                Grid.Row="6" Stroke="{StaticResource Gray900}"
+                Grid.Column="5" Grid.ColumnSpan="3"/>
 
         <Border Margin="0" StrokeShape="RoundRectangle 30" x:Name="B2"
-                Grid.Row="5" Stroke="{StaticResource Gray900}"
-                Grid.Column="2" Grid.ColumnSpan="5"/>
+                Grid.Row="7" Stroke="{StaticResource Gray900}"
+                Grid.Column="4" Grid.ColumnSpan="5"/>
 
         <Border Margin="0" StrokeShape="RoundRectangle 30" x:Name="B3"
-                Grid.Row="6" Stroke="{StaticResource Gray900}"
-                Grid.Column="1" Grid.ColumnSpan="7"/>
-        
-                       <?LEFT TILES ?>
+                Grid.Row="8" Stroke="{StaticResource Gray900}"
+                Grid.Column="3" Grid.ColumnSpan="7"/>
+
+        <Border Margin="0" StrokeShape="RoundRectangle 30" x:Name="B4"
+                Grid.Row="9" Stroke="{StaticResource Gray900}"
+                Grid.Column="2" Grid.ColumnSpan="9"/>
+
+        <Border Margin="0" StrokeShape="RoundRectangle 30" x:Name="B5"
+                Grid.Row="10" Stroke="{StaticResource Gray900}"
+                Grid.Column="1" Grid.ColumnSpan="11"/>
+
+                            <?LEFT TILES ?>
 
         <Border Margin="15,0,0,0" StrokeShape="RoundRectangle 30" x:Name="L1"
-                       Grid.Row="2"  Grid.RowSpan="3" Stroke="{StaticResource Gray900}"
-                       Grid.Column="2" />
+                       Grid.Row="4"  Grid.RowSpan="3" Stroke="{StaticResource Gray900}"
+                       Grid.Column="4" />
 
         <Border Margin="15,0,0,0" StrokeShape="RoundRectangle 30" x:Name="L2"
-                       Grid.Row="1"  Grid.RowSpan="5" Stroke="{StaticResource Gray900}"
-                       Grid.Column="1" />
+                       Grid.Row="3"  Grid.RowSpan="5" Stroke="{StaticResource Gray900}"
+                       Grid.Column="3" />
 
         <Border Margin="15,0,0,0" StrokeShape="RoundRectangle 30" x:Name="L3"
-                        Grid.Row="0"  Grid.RowSpan="7" Stroke="{StaticResource Gray900}"
+                        Grid.Row="2"  Grid.RowSpan="7" Stroke="{StaticResource Gray900}"
+                        Grid.Column="2" />
+
+        <Border Margin="15,0,0,0" StrokeShape="RoundRectangle 30" x:Name="L4"
+                        Grid.Row="1"  Grid.RowSpan="9" Stroke="{StaticResource Gray900}"
+                        Grid.Column="1" />
+
+        <Border Margin="15,0,0,0" StrokeShape="RoundRectangle 30" x:Name="L5"
+                        Grid.Row="0"  Grid.RowSpan="11" Stroke="{StaticResource Gray900}"
                         Grid.Column="0" />
 
-                        <?RIGHT TILES ?>
+        <?RIGHT TILES ?>
 
         <Border Margin="0,0,15,0" StrokeShape="RoundRectangle 30" x:Name="R1"
-                       Grid.Row="2"  Grid.RowSpan="3" Stroke="{StaticResource Gray900}"
-                       Grid.Column="6" />
+                       Grid.Row="4"  Grid.RowSpan="3" Stroke="{StaticResource Gray900}"
+                       Grid.Column="8" />
 
         <Border Margin="0,0,15,0" StrokeShape="RoundRectangle 30" x:Name="R2"
-                       Grid.Row="1"  Grid.RowSpan="5" Stroke="{StaticResource Gray900}"
-                       Grid.Column="7" />
+                       Grid.Row="3"  Grid.RowSpan="5" Stroke="{StaticResource Gray900}"
+                       Grid.Column="9" />
 
         <Border Margin="0,0,15,0" StrokeShape="RoundRectangle 30" x:Name="R3"
-                        Grid.Row="0"  Grid.RowSpan="7" Stroke="{StaticResource Gray900}"
-                        Grid.Column="8" />
-        
-                    <?FEEDBACK LABEL ?>
+                        Grid.Row="2"  Grid.RowSpan="7" Stroke="{StaticResource Gray900}"
+                        Grid.Column="10" />
 
-        <Label Grid.Row="3" HorizontalTextAlignment="Center" Text="STOPSTOP" FontSize="25" x:Name="FeedbackLabel"
-               Grid.Column="3" Grid.ColumnSpan="3" TextColor="{StaticResource Gray300}" />
+
+        <Border Margin="0,0,15,0" StrokeShape="RoundRectangle 30" x:Name="R4"
+                        Grid.Row="1"  Grid.RowSpan="9" Stroke="{StaticResource Gray900}"
+                        Grid.Column="11" />
+
+
+        <Border Margin="0,0,15,0" StrokeShape="RoundRectangle 30" x:Name="R5"
+                        Grid.Row="0"  Grid.RowSpan="11" Stroke="{StaticResource Gray900}"
+                        Grid.Column="12" />
+
+        <?FEEDBACK LABEL ?>
+
+        <Label Grid.Row="5" HorizontalTextAlignment="Center" Text="STOPSTOP" FontSize="15" x:Name="FeedbackLabel" Padding="-2"
+               Grid.Column="5" Grid.ColumnSpan="3" TextColor="{StaticResource Gray300}" />
 
     </Grid>
 
