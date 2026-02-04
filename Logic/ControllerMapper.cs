@@ -17,10 +17,10 @@
         private ControlLevel _LastStrLevel = ControlLevel.STOP;
 
         // Thresholds for entering a higher control level (responsive ramp-up)
-        private readonly float[] _entryThresholds = { 0.20f, 0.32f, 0.46f, 0.60f, 0.74f };
+        private readonly float[] _entryThresholds = { 0.25f, 0.50f, 0.75f };
 
         // Thresholds for exiting the current control level (stability ramp-down)
-        private readonly float[] _exitThreholds = { 0.15f, 0.28f, 0.42f, 0.56f, 0.70f };
+        private readonly float[] _exitThreholds = { 0.18f, 0.43f, 0.68f };
 
 
 
@@ -56,7 +56,7 @@
 
             // Determine the target level based purely on magnitude
             int targetInt = 0;
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 3; i++)
             {
                 if (absValue >= _entryThresholds[i])
                 {

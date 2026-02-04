@@ -8,13 +8,17 @@ namespace TiltControl
 
         private readonly HysteresisMapper _mapper = new HysteresisMapper();
 
-        Color OnColor = Colors.Cyan;
-        Color OffColor = Color.FromArgb("#333");
+        private readonly UdpService _udpSender = new UdpService("10.206.81.108", 4210);
 
+        //inital parameters
         private string _lastProtocol = "";
         private ControlLevel _lastAccLevel = ControlLevel.STOP;
         private ControlLevel _lastStrLevel = ControlLevel.STOP;
 
+        //reset (OFF) color
+        Color OffColor = Color.FromArgb("#333");
+
+        //arrays for manipulating UI Components
         Border[] _fwd;
         Border[] _bck;
         Border[] _lft;
@@ -27,27 +31,28 @@ namespace TiltControl
         {
             InitializeComponent();
 
-            _fwd = new[] { F1, F2, F3, F4, F5 };
-            _bck = new[] { B1, B2, B3, B4, B5 };
-            _lft = new[] { L1, L2, L3, L4, L5 };
-            _rgt = new[] { R1, R2, R3, R4, R5 };
+            //modular code where when i add or remove some levels, just delete the data from arrays
+            _fwd = new[] { F1, F2, F3 };
+            _bck = new[] { B1, B2, B3 };
+            _lft = new[] { L1, L2, L3 };
+            _rgt = new[] { R1, R2, R3 };
 
+
+            //same for colors
             _cyanRamp = new[]
             {
-                (Color)Application.Current.Resources["Cyan5"],
-                (Color)Application.Current.Resources["Cyan4"],
+                
                 (Color)Application.Current.Resources["Cyan3"],
                 (Color)Application.Current.Resources["Cyan2"],
-                (Color)Application.Current.Resources["Cyan1"],
+                (Color)Application.Current.Resources["Cyan1"]
             };
 
             _limeRamp = new[]
             {
-                (Color)Application.Current.Resources["Lime5"],
-                (Color)Application.Current.Resources["Lime4"],
+               
                 (Color)Application.Current.Resources["Lime3"],
                 (Color)Application.Current.Resources["Lime2"],
-                (Color)Application.Current.Resources["Lime1"],
+                (Color)Application.Current.Resources["Lime1"]
             };
 
             //                                 --- CORE TECHNOLOGY: Sensor Initialization and Robustness Check ---
@@ -76,13 +81,17 @@ namespace TiltControl
 
         private void Accelerometer_ReadingChanged(object sender, AccelerometerChangedEventArgs e)
         {
-            // Pozivamo pametni mapper
+            // calling mapper in reading loop
             var state = _mapper.GetState(-e.Reading.Acceleration.X, e.Reading.Acceleration.Y);
 
+            //checking last protocol (perfomance optimisation)
             if (state.protocol == _lastProtocol) return;
             _lastProtocol = state.protocol;
 
-            if(_lastAccLevel != state.accLvl || _lastStrLevel != state.strLvl) 
+            _ = _udpSender.SendPacketAsync(state.protocol);
+
+            //when levels changed, vibrate for better UX (prototyping the feedback from phone)
+            if (_lastAccLevel != state.accLvl || _lastStrLevel != state.strLvl) 
             {
                 Vibration.Default.Vibrate(TimeSpan.FromMilliseconds(25));
 
@@ -90,6 +99,7 @@ namespace TiltControl
                 _lastStrLevel = state.strLvl;
             }
 
+            //thread for refreshing UI
             MainThread.BeginInvokeOnMainThread(() =>
             {
                
@@ -122,9 +132,10 @@ namespace TiltControl
 
         private void UpdateGrid(ControlLevel accLvl, bool isFwd, ControlLevel strLvl, bool isRgt)
         {
-            // Resetuj sve prvo na sivo
+            //"First reset all..."
             ResetAll();
 
+            //"...Then update borders"
             PaintAxis(_fwd, _bck, _cyanRamp, (int)accLvl, isFwd);
             PaintAxis(_rgt, _lft, _limeRamp, (int)strLvl, isRgt);
         
@@ -132,11 +143,11 @@ namespace TiltControl
 
         private void ResetAll()
         {
-            // Brzi nacin: stavi ih u listu ako zelis optimizaciju, ali i ovo radi
-            F1.Background = F2.Background = F3.Background = F4.Background = F5.Background = OffColor;
-            B1.Background = B2.Background = B3.Background = B4.Background = B5.Background = OffColor;
-            L1.Background = L2.Background = L3.Background = L4.Background = L5.Background = OffColor;
-            R1.Background = R2.Background = R3.Background = R4.Background = R5.Background = OffColor;
+            // fast thing: just paint all of them with OffColor
+            F1.Background = F2.Background = F3.Background = OffColor;
+            B1.Background = B2.Background = B3.Background = OffColor;
+            L1.Background = L2.Background = L3.Background = OffColor;
+            R1.Background = R2.Background = R3.Background = OffColor;
         }
 
         void PaintAxis(Border[] positive, Border[] negative, Color[] ramp, int level, bool isPositive)
