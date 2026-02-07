@@ -8,7 +8,7 @@ namespace TiltControl
 
         private readonly HysteresisMapper _mapper = new HysteresisMapper();
 
-        private readonly UdpService _udpSender = new UdpService("10.206.81.108", 4210);
+        private readonly UdpService _udpSender = new UdpService("10.154.138.108", 4210);
 
         //inital parameters
         private string _lastProtocol = "";
