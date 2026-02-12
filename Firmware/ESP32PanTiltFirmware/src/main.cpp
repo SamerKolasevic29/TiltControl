@@ -4,67 +4,50 @@
 #include <ESP32Servo.h>
 #include "SamerProtocol.h"
 
-//config 
+// Network configuration
 const char* ssid = "žnj";
 const char* password = "ovvoonno";
 const unsigned int localUdpPort = 4210;
+
+// Hardware pin definitions
 const int tiltPin = 18;
 const int panPin = 19;
-const int statusLed = 2;
 
 WiFiUDP udp;
 Servo tiltServo;
 Servo panServo;
 char incomingPacket[255];
-
-String lastCommand = "STOPSTOP";
-unsigned long lastPacketTime = 0;
-const unsigned long TIMEOUT_MS = 300;  
+String lastCommand = "STOPSTOP";     // Default idle state
 
 void setup() {
     Serial.begin(115200);
-    pinMode(statusLed, OUTPUT);
     
-    // Servo init
+    // Initialize servos with 500-2500µs range (0-180° mapping)
     tiltServo.setPeriodHertz(50);
     tiltServo.attach(tiltPin, 500, 2500);
+    
     panServo.setPeriodHertz(50);
     panServo.attach(panPin, 500, 2500);
     
-    Serial.println("\n╔═══════════════════════════════╗");
-    Serial.println("║   LUMINA PAN-TILT SISTEM     ║");
-    Serial.println("╚═══════════════════════════════╝");
-    
-    // Calibrate on startup
-    tiltServo.write(90);
-    panServo.write(90);
-    Serial.println("✓ Servos calibrated to 90°");
-    
-    // WiFi
+    // Center both servos at startup (90° = 1500µs)
+    tiltServo.writeMicroseconds(1500);
+    panServo.writeMicroseconds(1500);
+
+    // Establish WiFi connection
     Serial.print("Connecting to WiFi");
     WiFi.begin(ssid, password);
-    
     while (WiFi.status() != WL_CONNECTED) {
-        digitalWrite(statusLed, !digitalRead(statusLed));
-        delay(250);
-        Serial.print(".");
+        delay(250); Serial.print(".");
     }
-    
-    digitalWrite(statusLed, HIGH);
-    Serial.println("\n✓ WiFi connected!");
-    Serial.print("IP: ");
+    Serial.println("\nConnected! IP: ");
     Serial.println(WiFi.localIP());
-    
+
+    // Start UDP listener
     udp.begin(localUdpPort);
-    Serial.printf("✓ UDP listening on port %d\n", localUdpPort);
-    Serial.println("═══════════════════════════════");
 }
 
 void loop() {
-    unsigned long now = millis();
-    static unsigned long lastServoUpdate = 0;
-
-    // 1. read network packages
+    // Poll for incoming UDP packets
     int packetSize = udp.parsePacket();
     if (packetSize) {
         int len = udp.read(incomingPacket, 255);
@@ -74,9 +57,10 @@ void loop() {
         }
     }
 
-    // 2. execute every 20ms
-    if (now - lastServoUpdate >= 20) {
-        lastServoUpdate = now;
+    // Execute servo updates at 50Hz (20ms intervals)
+    static unsigned long lastUpdate = 0;
+    if (millis() - lastUpdate >= 20) {
+        lastUpdate = millis();
         processSamerPayload(lastCommand, tiltServo, panServo);
     }
 }

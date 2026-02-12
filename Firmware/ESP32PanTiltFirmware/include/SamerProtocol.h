@@ -3,35 +3,35 @@
 
 #include <ESP32Servo.h>
 
-//speed levels (degrees per update)
-const int SPEED_LEVEL_1 = 1;    //-precise 
-const int SPEED_LEVEL_2 = 3;    //-balanced
-const int SPEED_LEVEL_3 = 6;    //-agressive
+// Movement speed levels in degrees per cycle
+// Higher values = faster movement, adjust based on mechanical constraints
+const float SPEED_LEVEL_1 = 1.4f; 
+const float SPEED_LEVEL_2 = 2.8f;
+const float SPEED_LEVEL_3 = 6.0f;
 
-//safe angle constrains (fine-tune)
-const int TILT_MIN = 40;
-const int TILT_MAX = 120;
-const int PAN_MIN = 15;
-const int PAN_MAX = 165;
+// Servo angle limits in degrees (0-180 range)
+const float TILT_MIN = 95.0f;   
+const float TILT_MAX = 175.0f;
 
-//calibration positions for each servo
-const int CALIBRATE_TILT = 40;
-const int CALIBRATE_PAN = 90;
+const float PAN_MIN = 0.0f;
+const float PAN_MAX = 180.0f;
 
-// Helper function - extracted for DRY (Don't Repeat Yourself)
-inline int getSpeedForLevel(int level) {
+// Default calibration positions (centered at 90° = 1500µs)
+const float CALIBRATE_TILT = 90.0f; 
+const float CALIBRATE_PAN = 90.0f; 
+
+// Maps speed level (1-3) to actual velocity value
+inline float getSpeedForLevel(int level) {
     switch(level) {
         case 1: return SPEED_LEVEL_1;
         case 2: return SPEED_LEVEL_2;
         case 3: return SPEED_LEVEL_3;
-        default: return 0;
+        default: return 0.0f;
     }
 }
 
-//MAIN FUNCTION - command parsing and execution
 void processSamerPayload(const String &payload, Servo &tilt, Servo &pan);
-//Helper function - parsing in main function
-void parseCommand(const String &cmd, int &speed, bool &isForward, bool &isStop, bool &isCalibrate);
-
+void parseTiltCommand(const String &cmd, float &speed, bool &isStop, bool &isCalibrate);
+void parsePanCommand(const String &cmd, float &speed, bool &isStop, bool &isCalibrate);
 
 #endif
